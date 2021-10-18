@@ -1,4 +1,5 @@
 import pygame, sys, random
+import config as cfg
 
 def ball_animation():
     global ball_speed_x, ball_speed_y, player_score, opponent_score, score_time
@@ -81,7 +82,16 @@ light_grey = (200,200,200)
 ball_speed_x = 7 * random.choice((1,-1))
 ball_speed_y = 7 * random.choice((1,-1))
 player_speed = 0
-opponent_speed = 7
+
+if cfg.settings["difficulty"] == 'easy':
+    opponent_speed = 7
+
+elif cfg.settings["difficulty"] == 'medium':
+    opponent_speed = 9
+
+elif cfg.settings["difficulty"] == 'hard':
+    opponent_speed = 15
+
 
 # Text Variables
 player_score = 0
@@ -129,6 +139,6 @@ while True:
     opponent_text = game_font.render(f"{opponent_score}",False,light_grey)
     screen.blit(opponent_text,(screen_width/2-19,screen_height/2))
 
-    # Updating the window 
+    # Updating the window
     pygame.display.flip()
     clock.tick(60)
