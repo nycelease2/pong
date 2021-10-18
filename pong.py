@@ -34,7 +34,6 @@ def opponent_ai():
         opponent.top = 0
     if opponent.bottom >=screen_height:
         opponent.bottom = screen_height
-
 def ball_restart():
     global ball_speed_x, ball_speed_y, score_time
 
@@ -82,7 +81,7 @@ light_grey = (200,200,200)
 ball_speed_x = 7 * random.choice((1,-1))
 ball_speed_y = 7 * random.choice((1,-1))
 player_speed = 0
-
+difficulty = 60
 if cfg.settings["difficulty"] == 'easy':
     opponent_speed = 7
 
@@ -92,6 +91,9 @@ elif cfg.settings["difficulty"] == 'medium':
 elif cfg.settings["difficulty"] == 'hard':
     opponent_speed = 15
 
+elif cfg.settings["difficulty"] == 'impossible':
+    opponent_speed = 15
+    difficulty = 120
 
 # Text Variables
 player_score = 0
@@ -121,7 +123,22 @@ while True:
     # Game Logic
     ball_animation()
     player_animation()
-    opponent_ai()
+    if cfg.settings["singleplayer"] == True:
+        opponent_ai()
+
+    elif cfg.settings["singleplayer"] == False:
+        opponent.y = 0
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                opponent_speed +=7
+            if event.key == pygame.K_s:
+                opponent_speed -=7
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_w:
+                opponent_speed -=7
+            if event.key == pygame.K_s:
+                opponent_speed +=7
+
 
     # Visuals
     screen.fill(bg_color)
@@ -137,8 +154,8 @@ while True:
     screen.blit(player_text,(screen_width/2+5,screen_height/2))
 
     opponent_text = game_font.render(f"{opponent_score}",False,light_grey)
-    screen.blit(opponent_text,(screen_width/2-19,screen_height/2))
+    screen.blit(opponent_text,(screen_width/2-22,screen_height/2))
 
     # Updating the window
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(difficulty)
