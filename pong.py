@@ -1,5 +1,6 @@
 import pygame, sys, random
 
+# Main game logic
 def ball_animation():
     global ball_speed_x, ball_speed_y, player_score, opponent_score, score_time
     ball.x += ball_speed_x
@@ -16,8 +17,23 @@ def ball_animation():
         opponent_score += 1
         score_time = pygame.time.get_ticks()
 
-    if ball.colliderect(player) or ball.colliderect(opponent):
-        ball_speed_x *= -1
+    if ball.colliderect(player) and ball_speed_x > 0:
+        if abs(ball.right - player.left) < 10:
+            ball_speed_x *= -1
+        elif abs(ball.bottom - player.top) < 10 and ball_speed_y < 10:
+            ball_speed_y *= -1
+        elif abs(ball.top - player.bottom) < 10 and ball_speed_y < 10:
+            ball_speed_y *= -1
+
+    if ball.colliderect(opponent) and ball_speed_x < 0: 
+        if abs(ball.left - opponent.right) < 10:
+            ball_speed_x *= -1
+        elif abs(ball.bottom - opponent.top) < 10 and ball_speed_y < 10:
+            ball_speed_y *= -1
+        elif abs(ball.top - opponent.bottom) < 10 and ball_speed_y < 10:
+              ball_speed_y *= -1
+         
+
 def player_animation():
     player.y += player_speed
     if player.top <= 0:
@@ -71,7 +87,7 @@ pygame.display.set_caption('Pong')
 
 # Game Rectangles
 ball = pygame.Rect(screen_width/2 - 15,screen_height/2 - 15,30,30)
-player = pygame.Rect(screen_width - 20, screen_height/2 - 70,10,140)
+player = pygame.Rect(screen_width - 20 - 300, screen_height/2 - 70,10 + 300,140)
 opponent = pygame.Rect(10, screen_height/2 - 70, 10, 140)
 
 bg_color = pygame.Color('grey12')
@@ -108,7 +124,7 @@ while True:
             if event.key == pygame.K_UP:
                 player_speed +=7
                 
-    # Game Logic
+    # commands
     ball_animation()
     player_animation()
     opponent_ai()
